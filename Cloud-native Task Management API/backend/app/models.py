@@ -5,7 +5,7 @@ from app import db
 class User(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.String(255), nullable=False)
@@ -30,7 +30,7 @@ class User(db.Model):
 class Sprint(db.Model):
     __tablename__ = 'sprints'
 
-    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
@@ -54,13 +54,13 @@ class Sprint(db.Model):
 class Task(db.Model):
     __tablename__ = 'tasks'
 
-    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     status = db.Column(Enum('todo', 'in_progress', 'done', name='task_statuses'), nullable=False, default='todo')
     priority = db.Column(Enum('low', 'medium', 'high', name='task_priorities'), nullable=False, default='medium')
-    sprint_id = db.Column(db.BigInteger, db.ForeignKey('sprints.id', ondelete='SET NULL'), nullable=True)
-    assignee_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    sprint_id = db.Column(db.Integer, db.ForeignKey('sprints.id', ondelete='SET NULL'), nullable=True)
+    assignee_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

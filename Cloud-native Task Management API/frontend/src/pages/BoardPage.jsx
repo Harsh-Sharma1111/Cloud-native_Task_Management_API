@@ -55,6 +55,9 @@ export default function BoardPage() {
       setTasks(tasksData);
     } catch (error) {
       console.error('Failed to load tasks:', error);
+      import('react-hot-toast').then(({ default: toast }) => {
+        toast.error('Failed to load tasks');
+      });
     }
   }, [selectedSprintId]);
 

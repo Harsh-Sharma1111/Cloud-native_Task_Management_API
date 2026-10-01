@@ -69,6 +69,15 @@ It is designed to easily transition from a local development environment (using 
 - **Task Management Modal**: Created an overlay modal handling both Task Creation and Editing, auto-populating Sprint and Assignee dropdowns, and allowing Task Deletion (with confirmation).
 - **Data Visualization**: Integrated **Recharts** to display a horizontal, color-coded, live-updating progress chart summarizing the currently selected Sprint's completion status.
 
+### ✅ Phase 6: Automated Testing Quality Assurance
+- **Backend (Pytest)**:
+  - Engineered comprehensive integration tests covering all CRUD operations for Tasks.
+  - Developed reusable pytest fixtures (`app`, `client`, `auth_headers`) utilizing an in-memory SQLite database mapped through a dedicated `TestingConfig` class to guarantee fast, completely isolated test runs without altering development data.
+  - Achieved robust API route coverage with `pytest-cov`, strictly validating authentication requirements, bad payloads, and schema validation error strings.
+- **Frontend (Vitest & React Testing Library)**:
+  - Setup a full JS DOM testing environment configured via `setupTests.js` mocking browser-native APIs (like `window.matchMedia` for toasts).
+  - Wrote integration tests for the `KanbanBoard` verifying critical states (Loading spinner display, successful task fetching/sorting into columns, and failure/error states gracefully rendering error banners).
+
 ---
 
 ## 🛠️ Comprehensive Local Development Setup
@@ -152,7 +161,24 @@ The React application will be available at `http://localhost:5173/`.
 
 ---
 
-## 🧪 Testing the API
-To test the API, import the provided `TaskManagementAPI.postman_collection.json` file into **Postman**. 
+## 🧪 Testing the Application
+
+### 1. Automated Backend Tests (Pytest)
+To run the automated backend test suite with full coverage reporting:
+```bash
+cd backend
+python -m pytest --cov=app tests/
+```
+*Tests are isolated and utilize an in-memory SQLite database so they will not affect your local `taskdb_dev` data.*
+
+### 2. Automated Frontend Tests (Vitest)
+To run the React component tests:
+```bash
+cd frontend
+npm run test
+```
+
+### 3. Manual API Exploration (Postman)
+To manually test and explore the API, import the provided `TaskManagementAPI.postman_collection.json` file into **Postman**. 
 1. Use the `/api/auth/login` endpoint with `admin@example.com` and `password123` to receive a JWT.
 2. The collection is configured to save the JWT to an environment variable, allowing you to instantly hit protected routes like `GET /api/tasks` or `POST /api/sprints`.
