@@ -58,4 +58,9 @@ def create_app(config_class):
     def internal_server_error(error):
         return jsonify({"error": "Internal Server Error"}), 500
 
+    @app.route('/health')
+    def health_check():
+        """Health check endpoint for container orchestration."""
+        return jsonify({"status": "healthy"}), 200
+
     return app

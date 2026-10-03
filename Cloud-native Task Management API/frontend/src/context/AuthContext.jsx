@@ -52,12 +52,33 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const register = async (name, email, password) => {
+    try {
+      const data = await authApi.register({ name, email, password });
+      const { token, user: userData } = data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      setToken(token);
+      setUser(userData);
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Register error:", error);
+      return { 
+        success: false, 
+        error: error.response?.data?.error || 'Registration failed. Please try again.' 
+      };
+    }
+  };
+
   if (loading) {
-    return null; // Or a loading spinner
+    return null;
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

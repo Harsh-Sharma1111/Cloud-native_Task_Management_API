@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: task_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-taskdb_prod}
+      MYSQL_USER: ${DB_USER:-taskuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-taskpassword}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: task_backend
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=prod
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=${DB_USER:-taskuser}
+      - DB_PASSWORD=${DB_PASSWORD:-taskpassword}
+      - DB_NAME=${DB_NAME:-taskdb_prod}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-default_secret_for_jwt}
+      - SECRET_KEY=${SECRET_KEY:-default_secret_for_flask}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      # Using Python's built-in urllib to avoid needing curl in the slim image
+      test: ["CMD", "python", "-c", "import urllib.request, sys; sys.exit(0) if urllib.request.urlopen('http://localhost:5000/health').getcode() == 200 else sys.exit(1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Assuming the backend will be accessed via localhost:5000 from the client's browser
+        - VITE_API_BASE_URL=http://localhost:5000/api
+    container_name: task_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  db_data:

@@ -17,6 +17,9 @@ def seed_db():
     app = create_app(config_class)
     
     with app.app_context():
+        print("Creating tables if they don't exist...")
+        db.create_all()
+        
         print("Clearing existing data...")
         # Delete in reverse dependency order
         Task.query.delete()

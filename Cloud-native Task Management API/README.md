@@ -78,11 +78,32 @@ It is designed to easily transition from a local development environment (using 
   - Setup a full JS DOM testing environment configured via `setupTests.js` mocking browser-native APIs (like `window.matchMedia` for toasts).
   - Wrote integration tests for the `KanbanBoard` verifying critical states (Loading spinner display, successful task fetching/sorting into columns, and failure/error states gracefully rendering error banners).
 
+### ✅ Phase 7: Dockerization & Container Orchestration
+- **Multi-Stage Dockerfiles**: Developed highly optimized `Dockerfile`s for both frontend and backend to minimize image size and strip build dependencies, utilizing `alpine` and `slim` base images.
+- **Enhanced Security**: Enforced non-root execution by creating and utilizing an `appuser` within the backend container.
+- **Nginx Web Server**: Configured a dedicated Nginx server in the frontend container to accurately route and serve the static Vite build, fully supporting React client-side routing.
+- **Docker Compose Orchestration**: Engineered a robust `docker-compose.yml` unifying the MySQL database, Python backend, and React frontend. 
+- **Automated Healthchecks & Seeding**: Implemented strict `depends_on` conditions coupled with `curl`/`urllib` and `mysqladmin ping` healthchecks to ensure flawless boot ordering. Modified the application startup to automatically create tables and seed mock data if the database is fresh.
+
 ---
 
-## 🛠️ Comprehensive Local Development Setup
+## 🛠️ Running via Docker (Recommended)
 
-Follow these steps to get the API running locally on your machine.
+The absolute easiest way to run the entire application stack (Database, Backend, and Frontend) is utilizing Docker.
+
+1. Ensure **Docker Desktop** (or Docker daemon) is running.
+2. In the root directory, simply run:
+```bash
+docker compose up --build -d
+```
+3. The application will automatically build the images, create the database, and seed the mock data. Wait ~30 seconds for the containers to become healthy.
+4. Visit `http://localhost:3000/` in your browser.
+
+---
+
+## 🛠️ Local Native Development Setup
+
+Follow these steps to run the API locally natively (without Docker).
 
 ### 1. Prerequisites
 - Python 3.10+ installed.
