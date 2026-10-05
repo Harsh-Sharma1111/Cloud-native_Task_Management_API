@@ -39,15 +39,6 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.event.workflow_run.head_sha }}
 
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v5
-        with:
-          context: "./Cloud-native Task Management API/frontend"
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ github.event.workflow_run.head_sha }}
-
       - name: Deploy to EC2 and Health Check
         uses: appleboy/ssh-action@v1.0.3
         with:
