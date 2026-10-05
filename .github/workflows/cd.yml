@@ -39,6 +39,17 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.event.workflow_run.head_sha }}
 
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: "./Cloud-native Task Management API/frontend"
+          push: true
+          build-args: |
+            VITE_API_BASE_URL=http://${{ secrets.EC2_HOST }}:5000/api
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ github.event.workflow_run.head_sha }}
+
       - name: Deploy to EC2 and Health Check
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -55,7 +66,7 @@ jobs:
             docker compose up -d
 
             # Health check loop
-            TIMEOUT=30
+            TIMEOUT=90
             START=$(date +%s)
             
             # NOTE: Backend runs on port 5000
@@ -73,7 +84,7 @@ jobs:
               ELAPSED=$((NOW - START))
               
               if [ $ELAPSED -ge $TIMEOUT ]; then
-                echo "Deployment failed: Health check timed out after 30 seconds."
+                echo "Deployment failed: Health check timed out after 90 seconds."
                 exit 1
               fi
               
