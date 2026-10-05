@@ -7,7 +7,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -23,13 +23,13 @@ export default function LoginPage() {
     }
 
     const result = await login(email, password);
-    
+
     if (result.success) {
       navigate('/');
     } else {
       setError(result.error);
     }
-    
+
     setIsLoading(false);
   };
 
@@ -37,9 +37,9 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg dark:bg-gray-800">
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
-          Welcome Back
+          Welcome Back, Professor!
         </h2>
-        
+
         {error && (
           <div className="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
             {error}
@@ -78,7 +78,7 @@ export default function LoginPage() {
           >
             {isLoading ? 'Signing in...' : 'Sign in'}
           </button>
-          
+
           <div className="text-sm text-center text-gray-600 dark:text-gray-400">
             Don't have an account?{' '}
             <Link to="/register" className="font-medium text-blue-600 hover:underline dark:text-blue-500">
